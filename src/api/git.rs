@@ -1,18 +1,13 @@
 use crate::models::git::GitPath;
 use crate::models::git::Service;
-use std::ascii::AsciiExt;
 use std::io::ErrorKind;
 use std::io::Read;
 use std::io::Write;
 use std::process;
 use std::process::Stdio;
-use std::str;
 
 use actix_web::HttpRequest;
-use actix_web::{get, post, web, HttpResponse, Responder};
-
-use encoding::all::ISO_8859_1;
-use encoding::{EncoderTrap, Encoding};
+use actix_web::{get, post, web, HttpResponse};
 
 // Info Refs
 #[get("/{u}/{r}/info/refs")]
@@ -30,12 +25,19 @@ pub async fn info_refs(
         if it fails then we look into reason why that happened and act accordingly.
     */
 
-    let c = process::Command::new(&s)
+    let c = match process::Command::new(&s)
         .arg("--advertise-refs")
         .arg("--stateless-rpc")
         .arg(format!("./git/{}/{}.git/", p.u, p.r))
-        .output()
-        .expect("Cannot execute git command!");
+        .output() {
+            Err(msg) => match msg.kind() {
+                ErrorKind::NotFound => {
+                    return HttpResponse::NotFound().body("This repo does not exist")
+                }
+                _ => return HttpResponse::InternalServerError().body("Oops something went wrong"),
+            },
+            Ok(proc) => proc,
+        };
 
     let refs = String::from_utf8(c.stdout).unwrap_or_default();
 
