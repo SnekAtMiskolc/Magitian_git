@@ -1,7 +1,7 @@
 # Contributing
 
 After reading this file you can just send a pull request that describes the changes you made,
-if it is a bugfix explain what the bug was and how you found it as well as how i occoured!
+if it is a bugfix explain what the bug was and how you found it as well as how it occoured!
 
 ## Rules
 
