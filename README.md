@@ -1,6 +1,7 @@
 # Magitian Git
 
 A Git Smart Http implementation written in rust to be used for the Magitian git service.
+This crate handles interaction with git and communticates with other services to form the Magitian web service.
 
 ## Contributing
 
