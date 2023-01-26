@@ -8,7 +8,7 @@ If you are interested in contributing then please consult [CONTRIBUTING](CONTRIB
 
 ## Stages for now
 
-| stage-1                                                      |                                              stage-2 |
------------------------------------------------------------------------------------------------------------------------
+| stage-1 | stage-2 |
+|---------|---------|
 | write a full implementation that has the correct responses for all cases. | Intergrate Auth into the Magitian SHELL |
 | authentication | Intergrate commit tracking into Magition SHELL |
