@@ -14,5 +14,4 @@ serde = { version = "1.0.144", features = ["derive"] }
 log = "0.4.17"
 env_logger = "0.9.1"
 dotenv = "0.15"
-encoding = "0.2.33"
 futures-util = "0.3.25"
