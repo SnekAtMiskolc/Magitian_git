@@ -1,6 +1,7 @@
 use crate::models::git::GitPath;
 use crate::models::git::Service;
 use std::ascii::AsciiExt;
+use std::io::ErrorKind;
 use std::io::Read;
 use std::io::Write;
 use std::process;
@@ -61,7 +62,10 @@ pub async fn service_rpc(
         .stdout(Stdio::piped())
         .spawn()
     {
-        Err(msg) => panic!("Couldn't spawn stateless-rpc for service_rpc: {}", msg),
+        Err(msg) => match msg.kind() {
+            ErrorKind::NotFound => return HttpResponse::NotFound().body("This repo does not exist"),
+            _ => return HttpResponse::InternalServerError().body("Oops something went wrong")
+        },
         Ok(proc) => proc,
     };
 
