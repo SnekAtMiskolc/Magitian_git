@@ -14,14 +14,21 @@ use actix_web::{get, post, web, HttpResponse, Responder};
 use encoding::all::ISO_8859_1;
 use encoding::{EncoderTrap, Encoding};
 
+// Info Refs
 #[get("/{u}/{r}/info/refs")]
 pub async fn info_refs(
     s: web::Query<Service>,
     p: web::Path<GitPath>,
     _r: HttpRequest,
 ) -> HttpResponse {
+    // Get the desired service
     let s = s.service.clone();
     let rt = format!("application/x-{}-advertisement", s);
+
+    /*
+        run <service> --advertise-refs --stateless-rpc
+        if it fails then we look into reason why that happened and act accordingly.
+    */
 
     let c = process::Command::new(&s)
         .arg("--advertise-refs")
@@ -46,6 +53,7 @@ pub async fn info_refs(
         .body(format!("{}# service={}\n0000{}", pp, s, refs))
 }
 
+// Service rpc
 #[post("/{u}/{r}/{s}")]
 pub async fn service_rpc(
     _r: HttpRequest,
@@ -63,8 +71,10 @@ pub async fn service_rpc(
         .spawn()
     {
         Err(msg) => match msg.kind() {
-            ErrorKind::NotFound => return HttpResponse::NotFound().body("This repo does not exist"),
-            _ => return HttpResponse::InternalServerError().body("Oops something went wrong")
+            ErrorKind::NotFound => {
+                return HttpResponse::NotFound().body("This repo does not exist")
+            }
+            _ => return HttpResponse::InternalServerError().body("Oops something went wrong"),
         },
         Ok(proc) => proc,
     };
