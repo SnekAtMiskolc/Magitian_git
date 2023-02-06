@@ -27,3 +27,8 @@ If that request succeeds, git will continue by sending the following request:
 POST /git-upload-pack
 ```
 The post request contains a so called packfile which uses the pack protocol to tell the repository what things need to be added to the ODB (Object Database).
+
+# Summary
+What happened here?
+First the server told us what it has then we saw that it was missing some things that we had or if it has everything.
+In case it is missing some things we send it the missing objects as a packfile else we just quit and tell the user that everything is up to date.
